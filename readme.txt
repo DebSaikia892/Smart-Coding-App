@@ -1,7 +1,7 @@
 Installation
 
 Clone the Repository
-git clone https://github.com/your-username/ai-coding-assistant.git
+git clone https://github.com/DebSaikia892/Smart-Coding-App.git
 cd ai-coding-assistant
 
 Create Virtual Environment
