@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Pair Programmer</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <!-- Add FontAwesome for toolbar icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>AI Voice Pair Programmer</h1>
+            <div class="user-controls">
+                <button id="settings-btn">Settings</button>
+                <div class="user-profile">
+                    <img src="assets/user-avatar.png" alt="User Avatar">
+                    <span id="user-name">User</span>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="sidebar">
+                <div class="project-files">
+                    <h3>Project Files</h3>
+                    <ul id="file-list">
+                        <li class="active">main.py</li>
+                        <li>utils.py</li>
+                        <li>index.html</li>
+                    </ul>
+                    <button id="new-file-btn">+ New File</button>
+                </div>
+                
+                <div class="voice-controls">
+                    <h3>Voice Assistant</h3>
+                    <button id="voice-record-btn" class="primary-btn">
+                        <span class="icon">🎤</span> Start Recording
+                    </button>
+                    <div id="voice-status">Ready to listen...</div>
+                </div>
+            </div>
+            
+            <div class="editor-container">
+                <div class="editor-tabs">
+                    <div class="tab active">main.py</div>
+                    <div class="tab">utils.py</div>
+                    <div class="tab">index.html</div>
+                </div>
+                <div class="editor-toolbar">
+                    <button id="format-btn" class="toolbar-btn" title="Format Code">
+                        <i class="fas fa-indent"></i> Format
+                    </button>
+                    <button id="explain-btn" class="toolbar-btn" title="Explain Code">
+                        <i class="fas fa-book"></i> Explain
+                    </button>
+                    <button id="improve-btn" class="toolbar-btn" title="Improve Code">
+                        <i class="fas fa-magic"></i> Improve
+                    </button>
+                    <button id="analyze-btn" class="toolbar-btn" title="Analyze Code">
+                        <i class="fas fa-search"></i> Analyze
+                    </button>
+                    <button id="test-btn" class="toolbar-btn" title="Generate Tests">
+                        <i class="fas fa-vial"></i> Test
+                    </button>
+                    <button id="doc-btn" class="toolbar-btn" title="Generate Documentation">
+                        <i class="fas fa-file-alt"></i> Document
+                    </button>
+                </div>
+                
+                <div class="code-editor">
+                    <textarea id="code-area"></textarea>
+                </div>
+                <div id="results-panel" class="results-panel">
+                    <div class="panel-header">
+                        <h3 id="results-title">Results</h3>
+                        <button id="close-results">×</button>
+                    </div>
+                    <div id="results-content"></div>
+                </div>
+                
+                <div class="assistant-panel">
+                    <div class="panel-header">
+                        <h3>AI Assistant</h3>
+                        <button id="collapse-assistant">−</button>
+                    </div>
+                    <div class="assistant-content">
+                        <div id="assistant-messages">
+                            <div class="message assistant">
+                                <div class="message-content">
+                                    Hello! I'm your AI pair programmer. Ask me anything about your code or tell me what you'd like to build.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="message-input">
+                            <input type="text" id="text-input" placeholder="Type a message...">
+                            <button id="send-btn">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h3>Preferences</h3>
+                        <div class="setting-item">
+                            <label for="language-select">Preferred Language:</label>
+                            <select id="language-select">
+                                <option value="python">Python</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="skill-level">Skill Level:</label>
+                            <select id="skill-level">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate" selected>Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="theme-select">Editor Theme:</label>
+                            <select id="theme-select">
+                                <option value="light">Light</option>
+                                <option value="dark" selected>Dark</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="font-size">Font Size:</label>
+                            <input type="range" id="font-size" min="10" max="24" value="14">
+                            <span id="font-size-value">14px</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save-settings" class="primary-btn">Save Settings</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Code Improvement Modal -->
+        <div id="code-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">Code Improvement</h2>
+                    <span class="close" id="close-code-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="modal-content"></div>
+                    <div class="button-container">
+                        <button id="apply-changes" class="primary-btn">Apply Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Required scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <!-- Add XML mode required for HTML mixed mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <!-- Add CSS mode required for HTML mixed mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <!-- Add marked for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Add highlight.js for syntax highlighting in results -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <!-- Application scripts -->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/voice_handler.js"></script>
+    <script src="scripts/editor.js"></script>
+    <script src="scripts/ui_controller.js"></script>
+</body>
+</html>
