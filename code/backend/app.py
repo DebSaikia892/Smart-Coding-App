@@ -12,7 +12,7 @@ CORS(app)
 
 # Initialize services
 load_dotenv()
-GEMINI_API_KEY="AIzaSyDUMYNQBolwT8YqvNhuYRpKhtXV_xPUxok"
+GEMINI_API_KEY="INSERT API KEY HERE"
 gemini_service = GeminiService(api_key=GEMINI_API_KEY)
 speech_recognizer = SpeechRecognizer()
 code_analyzer = CodeAnalyzer()
